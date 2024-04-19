@@ -225,6 +225,13 @@ class CPM_ortools(SolverInterface):
         self.solve(enumerate_all_solutions=True, solution_callback=cb, time_limit=time_limit, **kwargs)
         return cb.solution_count()
 
+    def solveAll_number(self, display=None, time_limit=None, solution_limit=None, call_from_model=False, **kwargs):
+        from ortools.sat.python import cp_model as ort
+    
+        cb = NumericMatrixPrinter()  # 使用新的回调
+        self.solve(enumerate_all_solutions=True, solution_callback=cb, time_limit=time_limit, **kwargs)
+        return cb.get_solution_matrices()  # 返回数字矩阵列表
+
 
     def solver_var(self, cpm_var):
         """
