@@ -697,6 +697,29 @@ try:
             # check for count limit
             if self.solution_count() == self._solution_limit:
                 self.StopSearch()
+                
+    class NumericMatrixPrinter(ort.CpSolverSolutionCallback):
+        def __init__(self):
+            super().__init__()
+            self.solutions = []
+    
+        def on_solution_callback(self):
+            # 创建一个与模型矩阵大小相同的矩阵
+            matrix_size = (7, 7)  # 假设矩阵大小是 7x7
+            solution_matrix = np.zeros(matrix_size, dtype=int)
+            
+            # 填充矩阵，假设 self.ort_model 是在外部定义的并且包含了布尔变量的列表
+            for i in range(matrix_size[0]):
+                for j in range(matrix_size[1]):
+                    if self.Value(self.ort_model.vars[i][j]):
+                        solution_matrix[i][j] = 1
+                    else:
+                        solution_matrix[i][j] = 0
+    
+            self.solutions.append(solution_matrix)
+    
+        def get_solution_matrices(self):
+            return self.solutions
 
 except ImportError:
     pass  # Ok, no ortools installed...
